@@ -1,12 +1,42 @@
-import pandas as pd
-import json
+import sys
 import os
 import math
+import json
+from pathlib import Path
+
+# Ensure backend directory is in sys.path for direct script execution
+CURRENT_FILE = Path(__file__).resolve()
+BACKEND_DIR = CURRENT_FILE.parent.parent
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+
+import pandas as pd
 from app.database import SessionLocal, engine, Base
 from app.models import (
     User, PlacementTeamMember, Student, JobDescription,
     CompanyLead, Company, Placement, ActivityLog, FollowUp
 )
+
+def get_data_dir() -> Path:
+    """Dynamically locates the /data directory containing source Excel files."""
+    project_root = BACKEND_DIR.parent             # .../ (Placement Management System root)
+    
+    candidates = [
+        project_root / "data",
+        BACKEND_DIR / "data",
+        Path.cwd() / "data",
+        Path.cwd().parent / "data",
+    ]
+    
+    for candidate in candidates:
+        if candidate.exists() and (candidate / "100_Students_List.xlsx").exists():
+            return candidate.resolve()
+            
+    searched_paths = "\n  - " + "\n  - ".join(str(c) for c in candidates)
+    raise FileNotFoundError(
+        f"Could not locate the 'data' directory containing '100_Students_List.xlsx'.\n"
+        f"Searched paths:{searched_paths}"
+    )
 
 def seed_database():
     # 1. Recreate tables
@@ -15,6 +45,18 @@ def seed_database():
     
     db = SessionLocal()
     print("Populating database with Rathinam College data...")
+
+    # Locate data directory dynamically
+    data_dir = get_data_dir()
+    excel_students_path = data_dir / "100_Students_List.xlsx"
+    excel_companies_path = data_dir / "Companies_List.xlsx"
+    
+    if not excel_students_path.exists():
+        raise FileNotFoundError(f"Student data file missing at: {excel_students_path}")
+    if not excel_companies_path.exists():
+        raise FileNotFoundError(f"Companies data file missing at: {excel_companies_path}")
+
+    print(f"Loading source data from: {data_dir}")
 
     # 2. Setup the Rathinam Access Hierarchy Users & Team Members
     team_data = [
@@ -103,11 +145,10 @@ def seed_database():
     print("Created users and placement team members.")
 
     # 3. Import Students from 100_Students_List.xlsx (header=3)
-    excel_students_path = "d:/Harini/Projects/Placement Management System/data/100_Students_List.xlsx"
     df_students = pd.read_excel(excel_students_path, sheet_name="Students Directory (100)", header=3)
     
     # Clean trailing empty rows or header residues
-    df_students = df_students[df_students["Roll No"].notna() & (df_students["Roll No"].str.strip() != "")]
+    df_students = df_students[df_students["Roll No"].notna() & (df_students["Roll No"].astype(str).str.strip() != "")]
     
     student_map = {}
     for _, row in df_students.iterrows():
@@ -163,14 +204,13 @@ def seed_database():
     print(f"Imported {len(student_map)} students.")
 
     # 4. Import Companies & JDs from Companies_List.xlsx (header=3)
-    excel_companies_path = "d:/Harini/Projects/Placement Management System/data/Companies_List.xlsx"
     df_companies = pd.read_excel(excel_companies_path, sheet_name="Companies & Job Drives", header=3)
     
     # Filter out empty or overall average rows
     df_companies = df_companies[
         df_companies["Company Name"].notna() & 
-        (df_companies["Company Name"].str.strip() != "") & 
-        (~df_companies["Company Name"].str.contains("Overall", case=False))
+        (df_companies["Company Name"].astype(str).str.strip() != "") & 
+        (~df_companies["Company Name"].astype(str).str.contains("Overall", case=False))
     ]
     
     company_map = {}
@@ -281,8 +321,8 @@ def seed_database():
     df_placements = pd.read_excel(excel_students_path, sheet_name="Placements & Drives (100)", header=3)
     df_placements = df_placements[
         df_placements["Roll No"].notna() & 
-        (df_placements["Roll No"].str.strip() != "") & 
-        (~df_placements["Roll No"].str.contains("Average", case=False))
+        (df_placements["Roll No"].astype(str).str.strip() != "") & 
+        (~df_placements["Roll No"].astype(str).str.contains("Average", case=False))
     ]
     
     placements_count = 0
