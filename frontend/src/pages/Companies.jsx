@@ -144,7 +144,7 @@ export default function Companies() {
                     <p className="font-black text-indigo-600">{comp.ctc} LPA</p>
                   </div>
                   <div>
-                    <span className="text-slate-400 font-medium text-[10px]">TIER BRACKET</span>
+                    <span className="text-slate-400 font-medium text-[10px]">COMPANY TIER</span>
                     <p className="font-semibold text-slate-700">{comp.tier}</p>
                   </div>
                   <div>

@@ -17,18 +17,17 @@ import api from '../api';
 import { useAuth } from '../context/AuthContext';
 
 const ALL_REPORTS = [
-  { id: '1', title: '1. Company-wise Registered Students', sub: 'Registered cohort breakdown per corporate partner', roles: ['admin', 'team_member'] },
-  { id: '2', title: '2. Completed Drives & Placed Students', sub: 'Final offer release logs, selected candidates, and CTC', roles: ['admin', 'manager', 'team_member'] },
-  { id: '3', title: '3. Student Placement Status', sub: 'Comprehensive student registry with drive history', roles: ['admin', 'manager'] },
-  { id: '4', title: '4. Company Status Pipeline', sub: 'Corporate outreach funnel from Cold to Completed', roles: ['admin', 'team_member'] },
+  { id: '1', title: 'Company-wise Registered Students', sub: 'Registered cohort breakdown per corporate partner', roles: ['admin', 'team_member'] },
+  { id: '2', title: 'Completed Drives & Placed Students', sub: 'Final offer release logs, selected candidates, and CTC', roles: ['admin', 'manager', 'team_member'] },
+  { id: '3', title: 'Student Placement Status', sub: 'Comprehensive student registry with drive history', roles: ['admin', 'manager'] },
+  { id: '4', title: 'Company Status Pipeline', sub: 'Corporate outreach funnel from Cold to Completed', roles: ['admin', 'team_member'] },
 ];
 
-const DEPARTMENTS = ['All', 'CSE', 'IT', 'ECE', 'EEE', 'MECH', 'MBA'];
+const DEPARTMENTS = ['All', 'Computer Science', 'Cyber Security', 'Business Administration', 'Information Technology', 'Electronics and Communication'];
 
 export default function Reports() {
   const { user } = useAuth();
   const role = user?.role || 'admin';
-
   const permittedTabs = ALL_REPORTS.filter(t => t.roles.includes(role));
   const [activeReport, setActiveReport] = useState(() => permittedTabs[0]?.id || '1');
   const [reportData, setReportData] = useState([]);

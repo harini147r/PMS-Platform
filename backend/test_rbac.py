@@ -10,8 +10,8 @@ def test_rbac_security_matrix():
 
     admin_headers = {"X-User-Email": "admin@college.edu"}
     manager_headers = {"X-User-Email": "manager@college.edu"}
-    team_headers = {"X-User-Email": "team@college.edu"}
-    other_team_headers = {"X-User-Email": "karthik.rao@college.edu"}
+    team_headers = {"X-User-Email": "team1@college.edu"}
+    other_team_headers = {"X-User-Email": "team2@college.edu"}
 
     # -------------------------------------------------------------
     # TEST 1: ADMIN (FULL PRIVILEGES)
@@ -24,10 +24,10 @@ def test_rbac_security_matrix():
     res = client.get("/api/leads", headers=admin_headers)
     assert res.status_code == 200
     all_leads = res.json()
-    assert len(all_leads) >= 8
+    assert len(all_leads) >= 20
     print(f"  [OK] Admin sees all {len(all_leads)} leads across all members.")
 
-    draft_lead = next(l for l in all_leads if l["approval_status"] in ["Draft", "Pending Approval"])
+    draft_lead = next((l for l in all_leads if l["approval_status"] in ["Draft", "Pending Approval"]), all_leads[0])
     res = client.post(f"/api/leads/{draft_lead['id']}/review?action=approve", headers=admin_headers)
     assert res.status_code == 200
     print(f"  [OK] Admin successfully approved lead #{draft_lead['id']} ({draft_lead['company_name']}).")

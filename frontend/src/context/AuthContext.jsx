@@ -1,12 +1,12 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import api from '../api';
 
 const AuthContext = createContext();
 
 export const DEMO_CREDENTIALS = {
-  admin: { email: 'admin@college.edu', password: 'admin123', label: 'Head of Placement (Admin)', role: 'admin', name: 'Dr. Rajesh Kumar' },
-  manager: { email: 'manager@college.edu', password: 'manager123', label: 'Placement Manager', role: 'manager', name: 'Dr. Meenakshi Sundaram' },
-  team_member: { email: 'team@college.edu', password: 'team123', label: 'Placement Team Member', role: 'team_member', name: 'Prof. Ananya Sen' },
+  admin: { email: 'admin@college.edu', password: 'admin123', label: 'Head of Placement (Admin)', role: 'admin', name: 'Dr. Sivasubramaniam' },
+  manager: { email: 'manager@college.edu', password: 'manager123', label: 'Placement Manager', role: 'manager', name: 'Dr. Jeyakannan' },
+  team_member: { email: 'team1@college.edu', password: 'team123', label: 'Placement Team Member', role: 'team_member', name: 'Team Member 1' },
 };
 
 export const AuthProvider = ({ children }) => {
@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem('placement_user', JSON.stringify(res.data));
       return { success: true };
     } catch (err) {
-      console.error(err);
       const msg = err.response?.data?.detail || 'Invalid email or password.';
       setError(msg);
       return { success: false, error: msg };
@@ -37,9 +36,7 @@ export const AuthProvider = ({ children }) => {
 
   const quickLogin = async (roleKey) => {
     const cred = DEMO_CREDENTIALS[roleKey];
-    if (cred) {
-      return await login(cred.email, cred.password);
-    }
+    if (cred) return await login(cred.email, cred.password);
   };
 
   const logout = () => {
@@ -49,7 +46,7 @@ export const AuthProvider = ({ children }) => {
 
   const hasPermission = (permKey) => {
     if (!user) return false;
-    if (user.role === 'admin') return true; // Admin has all permissions
+    if (user.role === 'admin') return true;
     return !!user[permKey];
   };
 

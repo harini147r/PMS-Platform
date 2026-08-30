@@ -30,7 +30,7 @@ import api from '../api';
 import { useAuth } from '../context/AuthContext';
 import ExcelImportModal from '../components/ExcelImportModal';
 
-const DEPARTMENTS = ['All', 'CSE', 'IT', 'ECE', 'EEE', 'MECH', 'MBA'];
+const DEPARTMENTS = ['All', 'Computer Science', 'Cyber Security', 'Business Administration', 'Information Technology', 'Electronics and Communication'];
 const STATUSES = ['All', 'Placed', 'Unplaced'];
 
 export default function Students() {

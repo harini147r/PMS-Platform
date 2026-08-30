@@ -5,21 +5,21 @@ const RoleContext = createContext();
 export const ROLES = {
   ADMIN: {
     id: 'admin',
-    name: 'Dr. Rajesh Kumar',
+    name: 'Dr. Sivasubramaniam',
     title: 'Head of Placement (Admin)',
     description: 'Full system oversight, lead approval, student records, and company matching.',
     badgeColor: 'bg-purple-100 text-purple-800 border-purple-200'
   },
   TEAM_MEMBER: {
     id: 'team_member',
-    name: 'Prof. Ananya Sen',
+    name: 'Team Member 1',
     title: 'Placement Team Member',
     description: 'Manage assigned leads, follow-ups, upload JDs, and record completed drives.',
     badgeColor: 'bg-blue-100 text-blue-800 border-blue-200'
   },
   MANAGER: {
     id: 'manager',
-    name: 'Dr. Meenakshi Sundaram',
+    name: 'Dr. Jeyakannan',
     title: 'Placement Manager',
     description: 'Student overview, department analytics, and placement records.',
     badgeColor: 'bg-emerald-100 text-emerald-800 border-emerald-200'
