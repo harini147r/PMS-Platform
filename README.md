@@ -159,3 +159,6 @@ python test_rbac.py      # Verifies 100% of the RBAC authorization matrix
 - **Institution**: Rathinam College of Arts & Science (RCAS & RTC)
 - **Portal**: Central Placement Management Portal
 - **Head of Placement**: Dr. Sivasubramaniam
+
+## Author
+Harini R.
